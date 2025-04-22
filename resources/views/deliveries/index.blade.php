@@ -178,58 +178,42 @@
     @endif
 
     <script>
-        // Get all edit buttons
+        // Event listener untuk edit buttons
         const editButtons = document.querySelectorAll('.edit-btn');
-    
-        // Attach click event listener to each edit button
         editButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const deliveryId = this.getAttribute('data-id');
-                const status = document.querySelector(`#status_${deliveryId}`).value.trim();
-    
+                const statusValue = document.querySelector(`#status_${deliveryId}`).value.trim();
+        
                 // Set dropdown status value
-                document.querySelector(`#status_${deliveryId}`).value = status;
-    
+                document.querySelector(`#status_${deliveryId}`).value = statusValue;
+        
                 // Update form action URL
                 document.querySelector(`#frmDeliveries_${deliveryId}`).action = `{{ url('deliveries') }}/${deliveryId}`;
-    
-                // Show modal
+        
+                // Tampilkan modal
                 $(`#editModal_${deliveryId}`).modal('show');
             });
         });
-    
-        // Script for showing success message
-        const status = document.getElementById('status').value;
-        const message = document.getElementById('message').value;
-    
-        if (status === 'success' && message) {
-            swal("Success!", message, "success");
+        
+        // Event listener untuk tombol "Ambil Foto Bukti"
+        const ambilFotoButtons = document.querySelectorAll('.ambil-foto-btn');
+        ambilFotoButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const deliveryId = this.getAttribute('data-id');
+                const frmAmbilFoto = document.getElementById('frmAmbilFoto');
+                // Set action URL menggunakan route deliveries.update
+                frmAmbilFoto.action = `{{ url('deliveries') }}/${deliveryId}`;
+                // Tampilkan modal menggunakan jQuery dan Bootstrap
+                $('#ambilFotoModal').modal('show');
+            });
+        });
+        
+        // Tampilkan pesan sukses jika ada
+        const successStatus = document.getElementById('status').value;
+        const successMessage = document.getElementById('message').value;
+        if (successStatus === 'success' && successMessage) {
+            swal("Success!", successMessage, "success");
         }
     </script>
-    
-<script>
-    // Event listener untuk tombol "Ambil Foto Bukti"
-    const ambilFotoButtons = document.querySelectorAll('.ambil-foto-btn');
-    
-    ambilFotoButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const deliveryId = this.getAttribute('data-id');
-            const frmAmbilFoto = document.getElementById('frmAmbilFoto');
-            // Set action URL menggunakan route deliveries.update
-            frmAmbilFoto.action = `{{ url('deliveries') }}/${deliveryId}`;
-            // Tampilkan modal menggunakan jQuery dan Bootstrap
-            $('#ambilFotoModal').modal('show');
-        });
-    });
-    
-    // (Kode existing untuk edit-btn dan pesan success tetap dipertahankan)
-    
-    // Script untuk showing success message
-    const status = document.getElementById('status').value;
-    const message = document.getElementById('message').value;
-    
-    if (status === 'success' && message) {
-        swal("Success!", message, "success");
-    }
-</script>
 @endsection
