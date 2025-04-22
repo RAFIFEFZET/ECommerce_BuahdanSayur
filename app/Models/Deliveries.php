@@ -13,7 +13,8 @@ class Deliveries extends Model
         'order_id',
         'shipping_date',
         'tracking_code',
-        'status'
+        'status',
+        'courier_proof',
     ];
     public function order()
     {

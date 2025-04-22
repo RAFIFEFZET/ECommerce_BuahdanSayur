@@ -58,8 +58,12 @@
                                                                 <input type="hidden" name="status" value="Dikirim">
                                                                 <button type="submit" class="badge badge-sm bg-gradient-primary">Pick up</button>
                                                             </form>
-                                                        @else
-                                                            <button type="button" class="badge badge-sm bg-gradient-secondary" disabled>Pick up</button>
+                                                        @elseif($data->status === 'Dikirim')
+                                                            @if(is_null($data->courier_proof))
+                                                                <button type="button" class="badge badge-sm bg-gradient-success ambil-foto-btn" data-id="{{ $data->id }}">Ambil Foto Bukti</button>
+                                                            @else
+                                                                <button type="button" class="badge badge-sm bg-gradient-secondary" disabled>Foto Sudah diambil</button>
+                                                            @endif
                                                         @endif
                                                     @else
                                                         <button type="button" class="badge badge-sm bg-gradient-primary me-2 edit-btn" data-id="{{ $data->id }}">Edit status order</button>
@@ -144,6 +148,35 @@
         @endforeach
     @endif
 
+    @if(Auth::guard('admin')->user()->level === 'Courier')
+    <div class="modal fade" id="ambilFotoModal" tabindex="-1" role="dialog" aria-labelledby="ambilFotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="ambilFotoModalLabel">Ambil Foto Bukti</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form id="frmAmbilFoto" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="modal-body">
+            <div class="mb-3">
+                <label for="courier_proof" class="form-label">Upload Foto Bukti</label>
+                <input type="file" class="form-control" name="courier_proof" id="courier_proof" accept="image/*" required>
+            </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Simpan Foto Bukti</button>
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+    @endif
+
     <script>
         // Get all edit buttons
         const editButtons = document.querySelectorAll('.edit-btn');
@@ -172,5 +205,32 @@
         if (status === 'success' && message) {
             swal("Success!", message, "success");
         }
-    </script>    
+    </script>
+    
+    // Tambahkan script di bagian bawah file index.blade.php, sebelum @endsection
+<script>
+    // Event listener untuk tombol "Ambil Foto Bukti"
+    const ambilFotoButtons = document.querySelectorAll('.ambil-foto-btn');
+    
+    ambilFotoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const deliveryId = this.getAttribute('data-id');
+            const frmAmbilFoto = document.getElementById('frmAmbilFoto');
+            // Set action URL menggunakan route deliveries.update
+            frmAmbilFoto.action = `{{ url('deliveries') }}/${deliveryId}`;
+            // Tampilkan modal menggunakan jQuery dan Bootstrap
+            $('#ambilFotoModal').modal('show');
+        });
+    });
+    
+    // (Kode existing untuk edit-btn dan pesan success tetap dipertahankan)
+    
+    // Script untuk showing success message
+    const status = document.getElementById('status').value;
+    const message = document.getElementById('message').value;
+    
+    if (status === 'success' && message) {
+        swal("Success!", message, "success");
+    }
+</script>
 @endsection
