@@ -1,32 +1,3 @@
-<?php
-// Koneksi ke database
-$host = env('DB_HOST', 'localhost');
-$username = env('DB_USERNAME', 'forge');
-$password = env('DB_PASSWORD', '');
-$database = env('DB_DATABASE', 'dblsprafif');
-
-$koneksi = new mysqli($host, $username, $password, $database);
-
-// Periksa koneksi
-if ($koneksi->connect_error) {
-    die("Koneksi gagal: " . $koneksi->connect_error);
-}
-
-// Hitung total sales
-$total_sales = DB::table('order_details')->sum('subtotal');
-
-// Hitung total sales hari ini
-$today_sales = DB::table('order_details')->whereDate('created_at', today())->sum('subtotal');
-
-// Hitung total customers
-$total_customers = DB::table('customers')->count();
-
-// Hitung total orders
-$total_orders = DB::table('orders')->count();
-
-// Tutup koneksi database
-$koneksi->close();
-?>
 @php
     $userLevel = Auth::guard('admin')->user()->level; // Assuming you're using the 'web' guard
 @endphp
