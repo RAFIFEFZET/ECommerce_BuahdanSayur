@@ -25,7 +25,8 @@
             </li> --}}
             @if (Auth::guard('admin')->check())
                     <div class="dropdown d-flex">
-                        <button class="dropdown-toggle d-flex gap-2 justify-content-center align-items-center btn btn-profile logout-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">                            <a href=""><img src="../assets/img/profile.png" style="width: 1.5rem; filter: invert(100%);" alt=""></a>
+                        <button class="dropdown-toggle d-flex gap-2 justify-content-center align-items-center btn btn-profile logout-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">                            
+                            <a href=""><img src="{{ asset('assets/img/profile.png') }}" style="width: 1.5rem; filter: invert(100%);" alt=""></a>
                             <span>{{ Auth::guard('admin')->user()->name }}</span>
                         </button>
                         <ul class="dropdown-menu">
@@ -66,7 +67,7 @@
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
                       <div class="my-auto">
-                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                        <img src="{{ asset('assets/img/team-2.jpg') }}" class="avatar avatar-sm  me-3 ">
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="text-sm font-weight-normal mb-1">
@@ -84,7 +85,7 @@
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
                       <div class="my-auto">
-                        <img src=".../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                        <img src="{{ asset('assets/img/small-logos/logo-spotify.svg') }}" class="avatar avatar-sm bg-gradient-dark  me-3 ">
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="text-sm font-weight-normal mb-1">
