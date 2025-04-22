@@ -25,20 +25,20 @@
             </li> --}}
             @if (Auth::guard('admin')->check())
                     <div class="dropdown d-flex">
-                      <button class="dropdown-toggle d-flex gap-2 justify-content-center align-items-center btn btn-profile logout-button" 
-                              type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="fa fa-user" style="font-size: 1.5rem;"></i>
-                      </button>
-                      <ul class="dropdown-menu">
-                          <li>
-                              <!-- Logout form -->
-                              <form action="{{ route('logout') }}" method="POST">
-                                  @csrf
-                                  <button type="submit" class="dropdown-item pointer-events-auto">{{ __('Log Out') }}</button>
-                              </form>
-                          </li>
-                      </ul>
-                  </div>
+                        <button class="dropdown-toggle d-flex gap-2 justify-content-center align-items-center btn btn-profile logout-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user" style="font-size: 1.5rem;"></i>
+                            <span>{{ Auth::guard('admin')->user()->name }}</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <!-- Logout form -->
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item pointer-events-auto">{{ __('Log Out') }}</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                     @else
                     <li class="nav-item">
                         <p class="nav-link text-white font-weight-bold px-0">Anda belum login.</p>
