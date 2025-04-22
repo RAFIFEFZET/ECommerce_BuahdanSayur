@@ -151,69 +151,102 @@
     @if(Auth::guard('admin')->user()->level === 'Courier')
     <div class="modal fade" id="ambilFotoModal" tabindex="-1" role="dialog" aria-labelledby="ambilFotoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
+        <form id="frmAmbilFoto" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
         <div class="modal-content">
-        <div class="modal-header">
+            <div class="modal-header">
             <h5 class="modal-title" id="ambilFotoModalLabel">Ambil Foto Bukti</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+                <span aria-hidden="true">&times;</span>
             </button>
-        </div>
-        <form id="frmAmbilFoto" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+            </div>
             <div class="modal-body">
-            <div class="mb-3">
-                <label for="courier_proof" class="form-label">Upload Foto Bukti</label>
-                <input type="file" class="form-control" name="courier_proof" id="courier_proof" accept="image/*" required>
+            <!-- Pilihan metode: Upload atau Ambil Langsung -->
+            <ul class="nav nav-pills mb-3" id="photoOptionsTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="upload-tab" data-bs-toggle="pill" data-bs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="true">Upload Foto</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                <button class="nav-link" id="capture-tab" data-bs-toggle="pill" data-bs-target="#capture" type="button" role="tab" aria-controls="capture" aria-selected="false">Ambil Foto Langsung</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="photoOptionsTabContent">
+                <!-- Opsi Upload -->
+                <div class="tab-pane fade show active" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+                <div class="mb-3">
+                    <label for="courier_proof_upload" class="form-label">Upload Foto Bukti</label>
+                    <input type="file" class="form-control" name="courier_proof_upload" id="courier_proof_upload" accept="image/*">
+                </div>
+                </div>
+                <!-- Opsi Ambil Foto Langsung -->
+                <div class="tab-pane fade" id="capture" role="tabpanel" aria-labelledby="capture-tab">
+                <div class="mb-3">
+                    <video id="video" width="100%" autoplay style="border: 1px solid #ccc;"></video>
+                    <canvas id="canvas" class="d-none"></canvas>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-secondary" id="start-camera">Mulai Kamera</button>
+                    <button type="button" class="btn btn-primary ms-2 d-none" id="capture-photo">Ambil Foto</button>
+                </div>
+                <div class="mt-3" id="photo-preview" style="display: none;">
+                    <p>Preview Foto:</p>
+                    <img id="captured-image" src="" class="img-fluid"/>
+                </div>
+                <!-- Input tersembunyi untuk menyimpan data gambar (base64) -->
+                <input type="hidden" name="courier_proof_capture" id="courier_proof_capture">
+                </div>
             </div>
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
             <button type="submit" class="btn btn-primary">Simpan Foto Bukti</button>
             </div>
-        </form>
         </div>
+        </form>
     </div>
     </div>
     @endif
 
-    <script>
-        // Event listener untuk edit buttons
-        const editButtons = document.querySelectorAll('.edit-btn');
-        editButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const deliveryId = this.getAttribute('data-id');
-                const statusValue = document.querySelector(`#status_${deliveryId}`).value.trim();
-        
-                // Set dropdown status value
-                document.querySelector(`#status_${deliveryId}`).value = statusValue;
-        
-                // Update form action URL
-                document.querySelector(`#frmDeliveries_${deliveryId}`).action = `{{ url('deliveries') }}/${deliveryId}`;
-        
-                // Tampilkan modal
-                $(`#editModal_${deliveryId}`).modal('show');
-            });
+        <script>
+      // Event listener untuk edit buttons
+      const editButtons = document.querySelectorAll('.edit-btn');
+      editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const deliveryId = this.getAttribute('data-id');
+          const statusEl = document.querySelector(`#status_${deliveryId}`);
+          if (statusEl) {
+            const statusValue = statusEl.value.trim();
+            statusEl.value = statusValue;
+          }
+          const frm = document.querySelector(`#frmDeliveries_${deliveryId}`);
+          if (frm) {
+            frm.action = `{{ url('deliveries') }}/${deliveryId}`;
+          }
+          $(`#editModal_${deliveryId}`).modal('show');
         });
-        
-        // Event listener untuk tombol "Ambil Foto Bukti"
-        const ambilFotoButtons = document.querySelectorAll('.ambil-foto-btn');
-        ambilFotoButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const deliveryId = this.getAttribute('data-id');
-                const frmAmbilFoto = document.getElementById('frmAmbilFoto');
-                // Set action URL menggunakan route deliveries.update
-                frmAmbilFoto.action = `{{ url('deliveries') }}/${deliveryId}`;
-                // Tampilkan modal menggunakan jQuery dan Bootstrap
-                $('#ambilFotoModal').modal('show');
-            });
+      });
+    
+      // Event listener untuk tombol "Ambil Foto Bukti"
+      const ambilFotoButtons = document.querySelectorAll('.ambil-foto-btn');
+      ambilFotoButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const deliveryId = this.getAttribute('data-id');
+          const frmAmbilFoto = document.getElementById('frmAmbilFoto');
+          if (frmAmbilFoto) {
+            frmAmbilFoto.action = `{{ url('deliveries') }}/${deliveryId}`;
+          }
+          $('#ambilFotoModal').modal('show');
         });
-        
-        // Tampilkan pesan sukses jika ada
-        const successStatus = document.getElementById('status').value;
-        const successMessage = document.getElementById('message').value;
-        if (successStatus === 'success' && successMessage) {
-            swal("Success!", successMessage, "success");
-        }
+      });
+    
+      // Tampilkan pesan sukses jika ada
+      const statusMsgEl = document.getElementById('status');
+      const messageEl = document.getElementById('message');
+      const successStatus = statusMsgEl ? statusMsgEl.value : '';
+      const successMessage = messageEl ? messageEl.value : '';
+      if (successStatus === 'success' && successMessage) {
+        swal("Success!", successMessage, "success");
+      }
     </script>
 @endsection
