@@ -51,12 +51,16 @@
                                             <td class="align-middle text-center text-sm">
                                                 <div class="d-flex justify-content-center">
                                                     @if(Auth::guard('admin')->user()->level === 'Courier')
-                                                        <form action="{{ route('deliveries.update', $data->id) }}" method="post">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="Dikirim">
-                                                            <button type="submit" class="badge badge-sm bg-gradient-primary">Pick up</button>
-                                                        </form>
+                                                        @if($data->status === 'Dikirim')
+                                                            <button type="button" class="badge badge-sm bg-gradient-secondary" disabled>Pick up</button>
+                                                        @else
+                                                            <form action="{{ route('deliveries.update', $data->id) }}" method="post">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="Dikirim">
+                                                                <button type="submit" class="badge badge-sm bg-gradient-primary">Pick up</button>
+                                                            </form>
+                                                        @endif
                                                     @else
                                                         <button type="button" class="badge badge-sm bg-gradient-primary me-2 edit-btn" data-id="{{ $data->id }}">Edit status order</button>
                                                     @endif
