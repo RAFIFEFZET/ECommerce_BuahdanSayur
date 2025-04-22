@@ -207,7 +207,6 @@
         }
     </script>
     
-    // Tambahkan script di bagian bawah file index.blade.php, sebelum @endsection
 <script>
     // Event listener untuk tombol "Ambil Foto Bukti"
     const ambilFotoButtons = document.querySelectorAll('.ambil-foto-btn');
